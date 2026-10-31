@@ -1,0 +1,58 @@
+name: ABSURD AI iOS Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate everything
+        run: |
+          echo "Validating repository..."
+          ls -la
+
+      - name: Startup everything
+        run: |
+          echo "Starting up..."
+          brew install xcodegen
+
+      - name: Look for Swift files
+        id: swift
+        run: |
+          if find . -type f -name "*.swift" | grep -q .; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Compile Swift files
+        if: steps.swift.outputs.found == 'true'
+        run: |
+          xcodegen generate
+          xcodebuild -project ABSURDAI.xcodeproj -scheme ABSURDAI -sdk iphoneos -configuration Release -derivedDataPath build build CODE_SIGNING_ALLOWED=NO
+
+      - name: Package everything into an .ipa
+        if: steps.swift.outputs.found == 'true'
+        run: |
+          mkdir -p Payload
+          cp -r build/Build/Products/Release-iphoneos/ABSURDAI.app Payload/
+          zip -r ABSURDAI.ipa Payload
+
+      - name: Upload artifact
+        if: steps.swift.outputs.found == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ABSURD-AI-ipa
+          path: ABSURDAI.ipa
+
+      - name: Done
+        run: echo "Done :)"
