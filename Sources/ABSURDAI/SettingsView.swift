@@ -13,7 +13,7 @@ struct SettingsView: View {
             .navigationTitle("Settings")
         }
     }
-    func detail(_ title: String) -> some View {
+    @ViewBuilder func detail(_ title: String) -> some View {
         Form {
             if title == "Appearance" {
                 Toggle("Dark mode", isOn: $darkMode)
