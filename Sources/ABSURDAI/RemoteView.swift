@@ -111,7 +111,7 @@ struct RemoteSessionView: View {
                         }
                     }
                 } else if tab == 2 {
-                    List(["C:\\Users\\Dev\\project","src","README.md","main.py"]) { Text("📁 \($0)") }
+                    List(["C:\\Users\\Dev\\project","src","README.md","main.py"], id: \.self) { Text("📁 \($0)") }
                 } else {
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 8) {
                         ForEach(["VS Code","Terminal","Browser","Explorer","Settings"], id: \.self) { a in
