@@ -84,9 +84,9 @@ struct ProjectDetailView: View {
                     Text("Files").tag(0); Text("Tasks").tag(1); Text("Chat").tag(2); Text("History").tag(3)
                 }.pickerStyle(.segmented).padding()
                 if tab == 0 {
-                    List(["README.md","src/App.swift","Package.swift"]) { Text("📄 \($0)") }
+                    List(["README.md","src/App.swift","Package.swift"], id: \.self) { Text("📄 \($0)") }
                 } else if tab == 1 {
-                    List(["Set up project","Design UI","Implement features","Write tests"]) { Text("☐ \($0)") }
+                    List(["Set up project","Design UI","Implement features","Write tests"], id: \.self) { Text("☐ \($0)") }
                 } else if tab == 2 {
                     VStack { Text("Project conversation (simulated)").foregroundStyle(.secondary); TextField("Message...", text: .constant("")).textFieldStyle(.roundedBorder) }
                         .padding()
