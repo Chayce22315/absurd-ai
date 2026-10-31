@@ -110,6 +110,7 @@ struct HomeView: View {
             }
             .navigationTitle("Home")
             .navigationDestination(for: String.self) { value in
+                // @ViewBuilder
                 switch value {
                 case "chat": ChatView()
                 case "create": CreateView()
