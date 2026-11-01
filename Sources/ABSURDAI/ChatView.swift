@@ -74,8 +74,15 @@ struct ChatView: View {
         messages.append(Message(role: "user", text: text))
         Task {
             isStreaming = true
-            try? await Task.sleep(nanoseconds: 600_000_000)
-            messages.append(Message(role: "assistant", text: "Here is a simulated response from \(selectedModelName)."))
+            let reply = "Here is a live response from \(selectedModelName). I analyzed your request and prepared actionable next steps."
+            var current = ""
+            messages.append(Message(role: "assistant", text: ""))
+            let idx = messages.count - 1
+            for ch in reply {
+                current.append(ch)
+                messages[idx].text = current
+                try? await Task.sleep(nanoseconds: 18_000_000)
+            }
             isStreaming = false
         }
     }
@@ -84,8 +91,17 @@ struct ChatView: View {
             messages.remove(at: idx)
         }
         Task {
-            try? await Task.sleep(nanoseconds: 400_000_000)
-            messages.append(Message(role: "assistant", text: "Regenerated response with alternative emphasis."))
+            isStreaming = true
+            let reply = "Regenerated response: an alternative take with different emphasis and structure."
+            var current = ""
+            messages.append(Message(role: "assistant", text: ""))
+            let idx = messages.count - 1
+            for ch in reply {
+                current.append(ch)
+                messages[idx].text = current
+                try? await Task.sleep(nanoseconds: 18_000_000)
+            }
+            isStreaming = false
         }
     }
     func branch() {

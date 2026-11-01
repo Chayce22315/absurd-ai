@@ -3,6 +3,7 @@ import SwiftUI
 struct AutomationView: View {
     @EnvironmentObject var state: AppState
     @State private var building: Bool = false
+    @State private var history: [String] = ["Build & Test Pipeline — success (2m ago)"]
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -19,7 +20,10 @@ struct AutomationView: View {
                             HStack {
                                 ForEach(["Trigger","Research","Plan","Create","Test","Report"], id: \.self) { Text($0).font(.caption).padding(6).background(.gray.opacity(0.2)).clipShape(Capsule()) }
                             }
-                            Button("Save Workflow") { building = false }.buttonStyle(.bordered)
+                            Button("Save Workflow") {
+                                state.automations.insert(Automation(id: "w\(Date().timeIntervalSince1970)", name: "New Workflow", enabled: true, trigger: "Manual", steps: ["receive task","research","plan","create","test","report"], runs: 0), at: 0)
+                                building = false
+                            }.buttonStyle(.bordered)
                         }
                         .padding()
                         .background(.gray.opacity(0.12))
@@ -38,7 +42,7 @@ struct AutomationView: View {
                             Text("Trigger: \(a.trigger) · Runs: \(a.runs)").font(.caption).foregroundStyle(.secondary)
                             HStack { ForEach(a.steps, id: \.self) { Text($0).font(.caption2).padding(4).background(.gray.opacity(0.2)).clipShape(Capsule()) } }
                             HStack {
-                                Button("Run Now") { }.buttonStyle(.bordered)
+                                Button("Run Now") { history.insert("\(a.name) — success (now)", at: 0) }.buttonStyle(.bordered)
                                 Button("History") { }.buttonStyle(.bordered)
                             }
                         }
@@ -48,8 +52,7 @@ struct AutomationView: View {
                     }
                     Text("Execution History").font(.headline)
                     VStack(alignment: .leading) {
-                        Text("• Build & Test Pipeline — success (2m ago)")
-                        Text("• Nightly Research — skipped (disabled)")
+                        ForEach(history, id: \.self) { Text("• \($0)") }
                     }.font(.caption).foregroundStyle(.secondary)
                     .padding()
                     .background(.gray.opacity(0.12))
