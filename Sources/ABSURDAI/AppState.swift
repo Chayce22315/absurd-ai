@@ -22,6 +22,36 @@ final class AppState: ObservableObject {
         didSet { UserDefaults.standard.set(darkMode, forKey: "darkMode") }
     }
 
+    @Published var providerPresetRaw: String {
+        didSet { UserDefaults.standard.set(providerPresetRaw, forKey: "providerPreset") }
+    }
+    @Published var providerBaseURL: String {
+        didSet { UserDefaults.standard.set(providerBaseURL, forKey: "providerBaseURL") }
+    }
+    @Published var providerModels: [AIModel] {
+        didSet {
+            if let data = try? JSONEncoder().encode(providerModels) {
+                UserDefaults.standard.set(data, forKey: "providerModels")
+            }
+        }
+    }
+
+    var providerPreset: AIProviderPreset {
+        get { AIProviderPreset(rawValue: providerPresetRaw) ?? .absurd }
+        set { providerPresetRaw = newValue.rawValue }
+    }
+
+    var apiKey: String? {
+        get { KeychainService.load(key: "provider_api_key") }
+        set {
+            if let value = newValue, !value.isEmpty {
+                KeychainService.save(key: "provider_api_key", value: value)
+            } else {
+                KeychainService.delete(key: "provider_api_key")
+            }
+        }
+    }
+
     init() {
         self.selectedModel = UserDefaults.standard.string(forKey: "selectedModel") ?? "auto"
         self.agents = SampleData.agents
@@ -34,5 +64,13 @@ final class AppState: ObservableObject {
         let nl = UserDefaults.standard.integer(forKey: "nestedLimit")
         self.nestedLimit = nl == 0 ? 3 : nl
         self.darkMode = UserDefaults.standard.object(forKey: "darkMode") as? Bool ?? true
+        self.providerPresetRaw = UserDefaults.standard.string(forKey: "providerPreset") ?? AIProviderPreset.absurd.rawValue
+        self.providerBaseURL = UserDefaults.standard.string(forKey: "providerBaseURL") ?? AIProviderPreset.absurd.defaultBaseURL
+        if let data = UserDefaults.standard.data(forKey: "providerModels"),
+           let models = try? JSONDecoder().decode([AIModel].self, from: data) {
+            self.providerModels = models
+        } else {
+            self.providerModels = []
+        }
     }
 }

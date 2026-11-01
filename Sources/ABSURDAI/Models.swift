@@ -1,6 +1,6 @@
 import Foundation
 
-struct AIModel: Identifiable {
+struct AIModel: Identifiable, Codable {
     let id: String
     let name: String
     let provider: String
@@ -8,6 +8,8 @@ struct AIModel: Identifiable {
     let caps: [String]
     var recent: Bool = false
     var auto: Bool = false
+    var free: Bool = false
+    var contextWindow: Int? = nil
 }
 
 struct Conversation: Identifiable {
