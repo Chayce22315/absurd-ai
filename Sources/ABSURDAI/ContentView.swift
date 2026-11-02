@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @AppStorage("hasOnboarded") private var hasOnboarded = false
     var body: some View {
         TabView {
             HomeView().tabItem { Label("Home", systemImage: "house.fill") }
@@ -11,5 +12,8 @@ struct ContentView: View {
         }
         .tint(.purple)
         .background(AnimatedBackground().ignoresSafeArea())
+        .fullScreenCover(isPresented: Binding(get: { !hasOnboarded }, set: { _ in })) {
+            OnboardingView()
+        }
     }
 }
