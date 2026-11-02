@@ -10,9 +10,6 @@ struct ContentView: View {
             SettingsView().tabItem { Label("Settings", systemImage: "gearshape.fill") }
         }
         .tint(.purple)
-        .background(
-            LinearGradient(colors: [Color.purple.opacity(0.25), Color.blue.opacity(0.15), Color.black], startPoint: .topLeading, endPoint: .bottomTrailing)
-                .ignoresSafeArea()
-        )
+        .background(AnimatedBackground().ignoresSafeArea())
     }
 }

@@ -11,7 +11,7 @@ struct HomeView: View {
                     HStack {
                         VStack(alignment: .leading) {
                             Text("ABSURD AI").font(.caption).foregroundStyle(.secondary)
-                            Text("Good evening, Operator").font(.title2).bold()
+                            Text("Good evening, Operator").font(.title2).bold().foregroundStyle(LinearGradient(colors: [.white, .purple, .blue], startPoint: .leading, endPoint: .trailing))
                             Text(Date().formatted(date: .complete, time: .omitted)).font(.caption).foregroundStyle(.secondary)
                         }
                         Spacer()
@@ -137,8 +137,9 @@ struct QuickAction: View {
             }
             .frame(maxWidth: .infinity)
             .padding(8)
-            .background(.gray.opacity(0.12))
+            .background(LinearGradient(colors: [.purple.opacity(0.35), .blue.opacity(0.25)], startPoint: .topLeading, endPoint: .bottomTrailing))
             .clipShape(RoundedRectangle(cornerRadius: 10))
+            .shadow(color: .purple.opacity(0.3), radius: 8)
         }
         .buttonStyle(.plain)
     }

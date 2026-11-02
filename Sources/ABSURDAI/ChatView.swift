@@ -6,6 +6,7 @@ struct ChatView: View {
     @StateObject private var viewModel = ChatViewModel()
     @State private var showHistory: Bool = false
     @State private var showModel: Bool = false
+    @State private var isRecording: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -53,9 +54,26 @@ struct ChatView: View {
                 }
 
                 HStack {
+                    Button("📎") { }.buttonStyle(.bordered)
+                    Button("🎤") { isRecording.toggle() }.buttonStyle(.bordered)
                     TextField("Message...", text: $viewModel.input).textFieldStyle(.roundedBorder)
                     Button("Send") { viewModel.send(state: state) }.buttonStyle(.borderedProminent)
                 }.padding()
+                .sheet(isPresented: $isRecording) {
+                    VStack(spacing: 16) {
+                        Text("Listening...").font(.headline)
+                        HStack(spacing: 4) {
+                            ForEach(0..<12, id: \.self) { i in
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(LinearGradient(colors: [.purple, .blue], startPoint: .bottom, endPoint: .top))
+                                    .frame(width: 6, height: CGFloat.random(in: 10...40))
+                                    .animation(.easeInOut(duration: 0.5).repeatForever(), value: isRecording)
+                            }
+                        }
+                        Button("Stop") { isRecording = false }.buttonStyle(.borderedProminent)
+                    }
+                    .padding()
+                }
             }
             .navigationTitle("Chat")
             .onAppear {

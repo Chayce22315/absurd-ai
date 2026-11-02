@@ -67,6 +67,17 @@ struct AgentsView: View {
                 }.padding()
             }
             .navigationTitle("Agent HQ")
+            .task {
+                while !Task.isCancelled {
+                    try? await Task.sleep(nanoseconds: 1_000_000_000)
+                    for i in state.agents.indices where state.agents[i].status == "running" {
+                        state.agents[i].progress = min(1.0, state.agents[i].progress + 0.03)
+                        if state.agents[i].progress >= 1.0 {
+                            state.agents[i].status = "completed"
+                        }
+                    }
+                }
+            }
             .sheet(isPresented: $showCreate) { AgentCreateView() }
             .sheet(isPresented: $showTeam) { AgentTeamView() }
             .sheet(item: $selectedAgent) { a in AgentDetailView(agent: a) }
