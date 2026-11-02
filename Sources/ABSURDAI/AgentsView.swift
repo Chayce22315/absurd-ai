@@ -12,6 +12,13 @@ struct AgentsView: View {
                     HStack {
                         Button("Create Agent") { showCreate = true }.buttonStyle(.borderedProminent)
                         Button("Create Team") { showTeam = true }.buttonStyle(.bordered)
+                    if #available(iOS 16.1, *) {
+                        Button("Start Live Activity") {
+                            if let agent = state.agents.first(where: { $0.status == "running" }) {
+                                LiveActivityManager.start(agent: agent)
+                            }
+                        }.buttonStyle(.bordered)
+                    }
                     }
                     HStack {
                         stat("Total", state.agents.count)
@@ -74,6 +81,9 @@ struct AgentsView: View {
                         state.agents[i].progress = min(1.0, state.agents[i].progress + 0.03)
                         if state.agents[i].progress >= 1.0 {
                             state.agents[i].status = "completed"
+                        }
+                        if #available(iOS 16.1, *) {
+                            LiveActivityManager.update(agent: state.agents[i])
                         }
                     }
                 }

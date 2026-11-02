@@ -6,6 +6,8 @@ struct SettingsView: View {
     @State private var apiKeyInput: String = ""
     @State private var testStatus: String = ""
     @State private var isTesting: Bool = false
+    @State private var notifications: [String] = ["Agent completed task", "Model updated", "Remote connected"]
+    @State private var storageUsed: String = "128 MB"
     let sections = ["Account","Appearance","Model Providers","API Connections","Agent Preferences","Subagent Spawning Limits","Permissions","Remote Computing","Notifications","Storage","About ABSURDAI"]
 
     var body: some View {
@@ -50,6 +52,15 @@ struct SettingsView: View {
                     Text("Automatic").tag("auto"); Text("Manual").tag("manual")
                 }
                 Stepper("Nested limit: \(state.nestedLimit)", value: $state.nestedLimit, in: 1...10)
+            } else if title == "Notifications" {
+                ForEach(notifications, id: \.self) { n in
+                    HStack { Text(n); Spacer(); Button("Read") { } }
+                }
+                Button("Clear All") { notifications.removeAll() }.foregroundStyle(.red)
+            } else if title == "Storage" {
+                Text("Used: \(storageUsed)")
+                Button("Clear Cache") { storageUsed = "64 MB" }
+                Button("Clear Conversations") { state.conversations.removeAll() }.foregroundStyle(.red)
             } else if title == "About ABSURD AI" {
                 Text("ABSURD AI v0.1 prototype. Multi-model, modular, polyglot backend.")
             } else {
